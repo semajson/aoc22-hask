@@ -1,7 +1,5 @@
 import Data.List
 import Data.List.Split
-import System.IO
-
 
 toInt :: [String] -> [Int]
 toInt = map read
@@ -9,14 +7,19 @@ toInt = map read
 parse :: [String] -> [[Int]]
 parse x = map toInt (splitWhen (== "") x)
 
-solve :: [[Int]] -> Int
-solve test = maximum totalCals
-    where totalCals = map sum test
+solve1 :: [[Int]] -> Int
+solve1 elfSnacks = maximum (totalCals)
+    where totalCals = map sum elfSnacks
 
+solve2 :: [[Int]] -> Int
+solve2 elfSnacks = sum (take 3 orderedTotalCals)
+    where totalCals = map sum elfSnacks
+          orderedTotalCals = reverse (sort totalCals)
 
+main:: IO()
 main = do
-    input <- readFile "test_inputs.txt"
+    input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    let sol = solve parsed_data
+    let sol = solve2 parsed_data
     print sol
