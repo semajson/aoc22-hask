@@ -1,5 +1,5 @@
-import Data.List
-import Data.List.Split
+import           Data.List
+import           Data.List.Split
 
 toInt :: [String] -> [Int]
 toInt = map read
