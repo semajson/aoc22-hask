@@ -1,4 +1,4 @@
-module Day02 (roundResult) where
+-- module Day02 where
 import           Data.List
 import           Data.List.Split
 import           Data.List.Split
@@ -50,7 +50,7 @@ solve1 stratergyGuide = sum (map calcRoundScore stratergyGuide)
 
 main:: IO()
 main = do
-    input <- readFile "test_inputs.txt"
+    input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
     let sol = solve1 parsed_data
