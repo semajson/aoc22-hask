@@ -6,41 +6,43 @@ import           Data.List.Split
 type Line = String
 type Shape = String
 
--- toInt :: [String] -> [Int]
--- toInt = map read
-
 parse :: [Line] -> [[Shape]]
 parse x = map (splitOn " ") x
 
+decodeShape :: Shape -> Shape
+decodeShape "X" = "R"
+decodeShape "A" = "R"
+decodeShape "Y" = "P"
+decodeShape "B" = "P"
+decodeShape "C" = "S"
+decodeShape "Z" = "S"
+decodeShape _   = error "unexpected shape"
+
 shapeScore :: Shape -> Int
--- Rock
-shapeScore "X" = 1
-shapeScore "A" = 1
-
--- Paper
-shapeScore "Y" = 2
-shapeScore "B" = 2
-
--- Scissors
-shapeScore "C" = 3
-shapeScore "Z" = 3
-
+shapeScore "R" = 1
+shapeScore "P" = 2
+shapeScore "S" = 3
 shapeScore _   = error "unexpected shape"
 
-myShapeScore:: [Shape] -> Int
-myShapeScore [_, myShape] = shapeScore myShape
-myShapeScore _            = error "unexpected"
-
 shapeIndex :: Shape -> Int
-shapeIndex shape = (shapeScore shape) - 1
+shapeIndex "R" = 0
+shapeIndex "P" = 1
+shapeIndex "S" = 2
+shapeIndex _   = error "unexpected shape"
+
+myShapeScore:: [Shape] -> Int
+myShapeScore [_, myShape] = shapeScore (decodeShape myShape)
+myShapeScore _            = error "unexpected"
 
 resultMatrix = [[3, 6, 0],
                 [0, 3, 6],
                 [6, 0, 3]]
 
-
 roundResult :: [Shape] -> Int
-roundResult [oppShape, myShape] = (resultMatrix !! (shapeIndex oppShape)) !!(shapeIndex myShape)
+roundResult [encOppShape, encMyShape] = (resultMatrix !! (shapeIndex oppShape)) !!(shapeIndex myShape)
+    where oppShape = decodeShape encOppShape
+          myShape = decodeShape encMyShape
+roundResult _ =  error "unexpected"
 
 calcRoundScore:: [Shape] -> Int
 calcRoundScore round = (roundResult round) + (myShapeScore round)
