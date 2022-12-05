@@ -1,17 +1,20 @@
 import           Data.List
 import           Data.List.Split
 
+type Line = String
+type Snack = Int
+
 toInt :: [String] -> [Int]
 toInt = map read
 
-parse :: [String] -> [[Int]]
+parse :: [Line] -> [[Snack]]
 parse x = map toInt (splitWhen (== "") x)
 
-solve1 :: [[Int]] -> Int
+solve1 :: [[Snack]] -> Int
 solve1 elfSnacks = maximum (totalCals)
     where totalCals = map sum elfSnacks
 
-solve2 :: [[Int]] -> Int
+solve2 :: [[Snack]] -> Int
 solve2 elfSnacks = sum (take 3 orderedTotalCals)
     where totalCals = map sum elfSnacks
           orderedTotalCals = reverse (sort totalCals)
