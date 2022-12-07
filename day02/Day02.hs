@@ -38,13 +38,14 @@ indexToShape  1 = "P"
 indexToShape  2 = "S"
 indexToShape _  = error "unexpected shape"
 
-myShapeScore:: [Shape] -> Int
-myShapeScore [_, myShape] = shapeScore (decodeShape myShape)
-myShapeScore _            = error "unexpected"
-
 resultMatrix = [[3, 6, 0],
                 [0, 3, 6],
                 [6, 0, 3]]
+
+myShapeScore1:: [Shape] -> Int
+myShapeScore1 [_, myShape] = shapeScore (decodeShape myShape)
+myShapeScore1 _            = error "unexpected"
+
 
 roundResult1 :: [Shape] -> Result
 roundResult1 [encOppShape, encMyShape] = (resultMatrix !! (shapeToIndex oppShape)) !!(shapeToIndex myShape)
@@ -53,7 +54,7 @@ roundResult1 [encOppShape, encMyShape] = (resultMatrix !! (shapeToIndex oppShape
 roundResult1 _ =  error "unexpected"
 
 calcRoundScore1:: [Shape] -> Int
-calcRoundScore1 round = (roundResult1 round) + (myShapeScore round)
+calcRoundScore1 round = (roundResult1 round) + (myShapeScore1 round)
 
 
 solve1 :: [[Shape]] -> Int
@@ -67,8 +68,8 @@ decodeResult _   = error "unexpected shape"
 
 
 getMyShape2:: Result -> Shape -> Shape
-getMyShape2 result oppShape = indexToShape(  fromJust (elemIndex result myShapeIndexOutcomes))
-    where myShapeIndexOutcomes = resultMatrix!!(shapeToIndex oppShape)
+getMyShape2 result oppShape = indexToShape(  fromJust (elemIndex result myShapeIndexResults))
+    where myShapeIndexResults = resultMatrix!!(shapeToIndex oppShape)
 
 calcRoundScore2:: [Shape] -> Int
 calcRoundScore2 [encOppShape, encResult] = result + (shapeScore (getMyShape2 result oppShape))
