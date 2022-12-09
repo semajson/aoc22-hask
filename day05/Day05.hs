@@ -51,24 +51,29 @@ replaceCommand index command commands = before ++ [command] ++ after
     (before, _:after) = splitAt index commands
 
 
-doCommand :: Command -> [Stack] -> [Stack]
-doCommand (moveNum, from, to) stacks =  (replaceCommand toIndex newTo (replaceCommand fromIndex newFrom stacks))
+moveBlocks1by1 :: Stack -> Stack
+moveBlocks1by1 stack = reverse stack
+
+doCommand :: Command -> [Stack] -> (Stack -> Stack) -> [Stack]
+doCommand (moveNum, from, to) stacks moveBlocks =  (replaceCommand toIndex newTo (replaceCommand fromIndex newFrom stacks))
     where
         newFrom = drop moveNum (stacks !! fromIndex)
         newTo = cratesToMove ++ (stacks !! toIndex)
-        cratesToMove = reverse (take moveNum (stacks !! fromIndex))
+        cratesToMove = moveBlocks (take moveNum (stacks !! fromIndex))
         fromIndex = getStackIndex from
         toIndex = getStackIndex to
 
-doAllCommands :: [Stack] -> [Command] -> [Stack]
-doAllCommands stacks [(a,b,c)] = doCommand (a,b,c) stacks
-doAllCommands stacks (command:remaining) = doAllCommands (doCommand command stacks) remaining
+
+doAllCommands :: [Stack] -> [Command] -> (Stack -> Stack) -> [Stack]
+doAllCommands stacks [(a,b,c)] moveBlocks = doCommand (a,b,c) stacks moveBlocks
+doAllCommands stacks (command:remaining) moveBlocks = doAllCommands (doCommand command stacks moveBlocks) remaining moveBlocks
 
 getTops :: [Stack] -> String
 getTops stacks = (transpose stacks) !! 0
 
 solve1 :: ([Stack], [Command])-> String
-solve1 (stacks, commands) = getTops (doAllCommands stacks commands)
+solve1 (stacks, commands) = getTops (doAllCommands stacks commands moveBlocks1by1)
+
 
 
 doNewCommand :: Command -> [Stack] -> [Stack]
@@ -93,7 +98,5 @@ main = do
     input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    print "test"
-    print parsed_data
-    let sol = solve2 parsed_data
+    let sol = solve1 parsed_data
     print sol
