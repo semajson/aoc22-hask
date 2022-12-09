@@ -74,23 +74,11 @@ getTops stacks = (transpose stacks) !! 0
 solve1 :: ([Stack], [Command])-> String
 solve1 (stacks, commands) = getTops (doAllCommands stacks commands moveBlocks1by1)
 
-
-
-doNewCommand :: Command -> [Stack] -> [Stack]
-doNewCommand (moveNum, from, to) stacks =  (replaceCommand toIndex newTo (replaceCommand fromIndex newFrom stacks))
-    where
-        newFrom = drop moveNum (stacks !! fromIndex)
-        newTo = cratesToMove ++ (stacks !! toIndex)
-        cratesToMove = take moveNum (stacks !! fromIndex)
-        fromIndex = getStackIndex from
-        toIndex = getStackIndex to
-
-doAllNewCommands :: [Stack] -> [Command] -> [Stack]
-doAllNewCommands stacks [(a,b,c)] = doNewCommand (a,b,c) stacks
-doAllNewCommands stacks (command:remaining) = doAllNewCommands (doNewCommand command stacks) remaining
+moveBlocksAllAtOnce :: Stack -> Stack
+moveBlocksAllAtOnce stack =  stack
 
 solve2 :: ([Stack], [Command])-> String
-solve2 (stacks, commands) = getTops (doAllNewCommands stacks commands)
+solve2 (stacks, commands) = getTops (doAllCommands stacks commands moveBlocksAllAtOnce)
 
 
 main:: IO()
@@ -98,5 +86,5 @@ main = do
     input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    let sol = solve1 parsed_data
+    let sol = solve2 parsed_data
     print sol
