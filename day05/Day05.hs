@@ -64,6 +64,7 @@ doCommand (moveNum, from, to) stacks moveBlocks =  (replaceCommand toIndex newTo
         toIndex = getStackIndex to
 
 
+-- Recursive function, applies all the commands on the stack recursively
 doAllCommands :: [Stack] -> [Command] -> (Stack -> Stack) -> [Stack]
 doAllCommands stacks [(a,b,c)] moveBlocks = doCommand (a,b,c) stacks moveBlocks
 doAllCommands stacks (command:remaining) moveBlocks = doAllCommands (doCommand command stacks moveBlocks) remaining moveBlocks
