@@ -76,12 +76,16 @@ isCommand :: Line -> Bool
 isCommand line = isInfixOf "$ " line
 
 makeDirectory ::  Path -> [Line] -> Directory
-makeDirectory currPath lsOutput = (currPath, lsOutput)
+makeDirectory currPath lsOutput = (currPath, lsOutputDirsReplaced)
     where lsOutputDirsReplaced = map (replaceDirs currPath) lsOutput
 
+
+-- replaceDirs ::  Path -> Line -> Line
+-- replaceDirs line currPath = error "invalid"
+
 replaceDirs ::  Path -> Line -> Line
-replaceDirs "" currPath = error "invalid"
-replaceDirs line currPath | isInfixOf "dir " line = currPath ++ "/" ++ (last (splitOn " " line))
+replaceDirs currPath "" = error "invalid"
+replaceDirs currPath line | isInfixOf "dir " line = buildNewPath currPath line
                           | otherwise = line
 
 
