@@ -16,7 +16,7 @@ main = do
     let input_lines =lines input
     let parsed_data = parse input_lines
     print parsed_data
-    let sol = solve1 parsed_data
+    let sol = solve2 parsed_data
     print sol
 
 parse :: [Line] -> [Directory]
@@ -108,3 +108,11 @@ getDirectory directoryTable line =  case matchingDir of
                         Just foundDir -> foundDir
                         Nothing       -> error "Didn't find match"
     where matchingDir = find ((line==) . fst) directoryTable
+
+
+solve2 :: [Directory] -> Int
+solve2 directories =  head ( sort (filter (needToFree<=) directoriesSizes))
+    where directoriesSizes = map (calcSizeDir directories) directories
+          needToFree = 30000000 - spaceLeft
+          spaceLeft = 70000000 - calcSizeDir directories (getDirectory directories "/")
+
