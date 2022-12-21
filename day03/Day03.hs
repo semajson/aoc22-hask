@@ -2,7 +2,6 @@
 import           Data.Char
 import           Data.List
 import           Data.List.Split
-import           Data.List.Split
 import           Data.Maybe
 
 type Line = String
