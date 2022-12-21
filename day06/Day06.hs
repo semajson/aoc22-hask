@@ -12,20 +12,20 @@ allUnique:: String -> Bool
 allUnique x = length(x) == length(Set.fromList x)
 
 
-getFirstIndexInPacket :: Line -> Int -> Int
-getFirstIndexInPacket message index | allUnique(take 4 message) = index + 4
-                                    | otherwise = getFirstIndexInPacket (tail message) (index + 1)
+getFirstIndexOfPacket :: Line -> Int -> Int
+getFirstIndexOfPacket message index | allUnique(take 4 message) = index + 4
+                                    | otherwise = getFirstIndexOfPacket (tail message) (index + 1)
 
 solve1 :: Line -> Int
-solve1 x = getFirstIndexInPacket x 0
+solve1 x = getFirstIndexOfPacket x 0
 
 
-getFirstIndexOfessage :: Line -> Int -> Int
-getFirstIndexOfessage message index | allUnique(take 14 message) = index + 14
-                                    | otherwise = getFirstIndexOfessage (tail message) (index + 1)
+getFirstIndexOfMessage :: Line -> Int -> Int
+getFirstIndexOfMessage message index | allUnique(take 14 message) = index + 14
+                                     | otherwise = getFirstIndexOfMessage (tail message) (index + 1)
 
 solve2 :: Line -> Int
-solve2 x = getFirstIndexOfessage x 0
+solve2 x = getFirstIndexOfMessage x 0
 
 
 main:: IO()
