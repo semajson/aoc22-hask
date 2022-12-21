@@ -12,7 +12,7 @@ type Directory = (DirectoryName, LsOutput)
 
 main:: IO()
 main = do
-    input <- readFile "test_inputs.txt"
+    input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
     print parsed_data
