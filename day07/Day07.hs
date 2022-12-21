@@ -1,4 +1,4 @@
-module Day07 where
+-- module Day07 where
 import           Data.List
 import           Data.List.Split
 import           Data.Maybe
@@ -16,8 +16,8 @@ main = do
     let input_lines =lines input
     let parsed_data = parse input_lines
     print parsed_data
-    -- let sol = solve2 parsed_data
-    -- print sol
+    let sol = solve1 parsed_data
+    print sol
 
 parse :: [Line] -> [Directory]
 parse output = parseOutput output ""
@@ -80,8 +80,6 @@ makeDirectory currPath lsOutput = (currPath, lsOutputDirsReplaced)
     where lsOutputDirsReplaced = map (replaceDirs currPath) lsOutput
 
 
--- replaceDirs ::  Path -> Line -> Line
--- replaceDirs line currPath = error "invalid"
 
 replaceDirs ::  Path -> Line -> Line
 replaceDirs currPath "" = error "invalid"
@@ -90,8 +88,23 @@ replaceDirs currPath line | isInfixOf "dir " line = buildNewPath currPath line
 
 
 
+solve1 :: [Directory] -> Int
+solve1 directories =  sum ( filter (100000>) directoriesSizes)
+    where directoriesSizes = map (calcSizeDir directories) directories
 
 
--- solve1 :: Line -> Int
--- solve1 x = getFirstIndexOfPacket x 0
+calcSizeDir :: [Directory] ->  Directory -> Int
+calcSizeDir directoryTable directory = sum (map (calcSizeLsLine directoryTable)  (snd directory))
 
+calcSizeLsLine :: [Directory] -> Line -> Int
+calcSizeLsLine directoryTable line  | isPrefixOf  "/" line = calcSizeDir directoryTable (getDirectory directoryTable line)
+                                    | otherwise = toInt ( head (splitOn " " line))
+
+toInt :: String -> Int
+toInt =  read
+
+getDirectory :: [Directory] -> String -> Directory
+getDirectory directoryTable line =  case matchingDir of
+                        Just foundDir -> foundDir
+                        Nothing       -> error "Didn't find match"
+    where matchingDir = find ((line==) . fst) directoryTable
