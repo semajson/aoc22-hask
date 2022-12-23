@@ -4,8 +4,7 @@ import qualified Data.Set  as Set
 
 type Line = String
 type SeeCount = Int
--- type Grid = [[(Int, SeeCount)]]
-type Grid = [[Int]]
+type Grid = [[(Int, SeeCount)]]
 
 main:: IO()
 main = do
@@ -18,13 +17,13 @@ main = do
 
 -- todo, rewrite with list comprehension
 parse :: [Line] -> Grid
-parse input = map (map toInt) input
+parse input = map ((map convert)) input
+    where
+        convert :: Char -> (Int, SeeCount)
+        convert x = ((toInt x), 0)
 
 toInt :: Char -> Int
 toInt =  read . pure
-
--- toInt :: [String] -> [Int]
--- toInt = map read
 
 -- solve1 :: Line -> Int
 -- solve1 x = getFirstIndexOfPacket x 0
