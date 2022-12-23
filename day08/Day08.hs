@@ -14,12 +14,11 @@ main = do
     input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    print parsed_data
     let sol = solve1 parsed_data
-    print " "
-    print " "
-    mapM_ print (debugSolve1 parsed_data)
     print sol
+    -- print " "
+    -- print " "
+    -- mapM_ print (debugSolve1 parsed_data)
 
 -- todo, rewrite with list comprehension
 parse :: [Line] -> Grid
@@ -34,14 +33,16 @@ toInt =  read . pure
 solve1 :: Grid -> Int
 solve1 grid =  (sum . (map (length . (filter (0<))))) gridSeenCount
     where gridSeenCount = map (map snd) markedGrid
-          markedGrid = (markSeenTrees . rotateGridLeft . markSeenTrees . rotateGridLeft . markSeenTrees . rotateGridLeft . markSeenTrees) grid
+          markedGrid = applyAllDirections grid markSeenTrees
 
 -- debug only
 debugSolve1 :: Grid -> Grid
 debugSolve1 grid =  rotateGridLeft markedGrid
     where gridSeenCount = map (map snd) markedGrid
-          markedGrid = (markSeenTrees . rotateGridLeft . markSeenTrees . rotateGridLeft . markSeenTrees . rotateGridLeft . markSeenTrees) grid
+          markedGrid = applyAllDirections grid markSeenTrees
 
+applyAllDirections :: Grid -> (Grid -> Grid) -> Grid
+applyAllDirections grid func = (func . rotateGridLeft . func . rotateGridLeft . func . rotateGridLeft . func) grid
 
 markSeenTrees :: Grid -> Grid
 markSeenTrees grid =  map (markSeenTreesRow (-1)) grid
