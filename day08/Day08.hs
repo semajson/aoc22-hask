@@ -13,15 +13,17 @@ main:: IO()
 main = do
     input <- readFile "real_inputs.txt"
     let input_lines =lines input
-    let parsed_data = parse input_lines
+    let parsed_data1 = parse input_lines
     let parsed_data2 = parse2 input_lines
 
-    print " "
-    print " "
-    mapM_ print (debugSolve2 parsed_data2)
+    -- print " "
+    -- print " "
+    -- mapM_ print (debugSolve2 parsed_data2)
 
-    let sol = solve2 parsed_data2
-    print sol
+    let sol1 = solve1 parsed_data1
+    print sol1
+    let sol2 = solve2 parsed_data2
+    print sol2
 
 -- todo, rewrite with list comprehension
 parse :: [Line] -> Grid
