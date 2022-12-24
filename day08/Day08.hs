@@ -12,7 +12,7 @@ type Row = [Tree]
 main:: IO()
 main = do
     input <- readFile "real_inputs.txt"
-    let input_lines =lines input
+    let input_lines = lines input
     let parsed_data1 = parse input_lines
     let parsed_data2 = parse2 input_lines
 
@@ -92,8 +92,8 @@ calcScenicScoreRow row =  [calcScenicScoreTree row] ++ (calcScenicScoreRow remai
 
 calcScenicScoreTree :: Row -> Tree
 calcScenicScoreTree row = (thisTreeHeight, newScenicScore)
-    where newScenicScore = curScenicStore * calcScenicScore
-          calcScenicScore = calcNumTreesCanSee remainingTrees thisTreeHeight
+    where newScenicScore = curScenicStore * numTreesCanSee
+          numTreesCanSee = calcNumTreesCanSee remainingTrees thisTreeHeight
           remainingTrees = tail row
           curScenicStore = snd thisTree
           thisTreeHeight = fst thisTree
