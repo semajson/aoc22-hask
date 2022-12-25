@@ -11,10 +11,11 @@ type Position = (Int, Int)
 
 main:: IO()
 main = do
-    input <- readFile "real_inputs.txt"
+    input <- readFile "test_inputs_2.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    let sol = solve1 parsed_data
+    print parsed_data
+    let sol = solve2 parsed_data
     print sol
 
 
@@ -73,19 +74,48 @@ calcNewTailPos headPos tailPos
 
     | ((headPosX - tailPosX ) == 1) && ((headPosY - tailPosY) == 2)  = (tailPosX +1, tailPosY +1)
     | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == 1)  = (tailPosX +1, tailPosY +1)
+    | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == 2)  = (tailPosX +1, tailPosY +1)
 
     | ((headPosX - tailPosX ) == 1) && ((headPosY - tailPosY) == -2)  = (tailPosX +1, tailPosY -1)
     | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == -1)  = (tailPosX +1, tailPosY -1)
+    | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == -2)  = (tailPosX +1, tailPosY -1)
 
     | ((headPosX - tailPosX ) == -1) && ((headPosY - tailPosY) == 2)  = (tailPosX -1, tailPosY +1)
     | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == 1)  = (tailPosX -1, tailPosY +1)
+    | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == 2)  = (tailPosX -1, tailPosY +1)
 
     | ((headPosX - tailPosX ) == -1) && ((headPosY - tailPosY) == -2)  = (tailPosX -1, tailPosY -1)
     | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == -1)  = (tailPosX -1, tailPosY -1)
+    | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == -2)  = (tailPosX -1, tailPosY -1)
     | otherwise = tailPos
 
     where (tailPosX, tailPosY) = tailPos
           (headPosX, headPosY) = headPos
+
+solve2 :: [Command] -> Int
+solve2 commands = (length . nub) (getTailVisistedSquares2 (0,0) [(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0)]  directions)
+    where directions = convertCommandsToDirections commands
+
+getTailVisistedSquares2:: Position -> [Position] -> [Direction] -> [Position]
+getTailVisistedSquares2 headPos tailList [] = []
+getTailVisistedSquares2 headPos tailList directions = [newTailPos] ++ (getTailVisistedSquares2 newHeadPos newTailList remainingDirections)
+    where newTailPos = last newTailList
+          (newHeadPos, newTailList) = moveDirectionMulti curDirection headPos tailList
+          remainingDirections = tail directions
+          curDirection= head directions
+
+moveDirectionMulti :: String -> Position -> [Position] -> (Position, [Position])
+moveDirectionMulti direction headPos tailList = (newHeadPos, newTailList)
+    where newTailList = calcNewTailList newHeadPos tailList
+          newHeadPos = calcNewHeadPos direction headPos
+
+calcNewTailList :: Position -> [Position] -> [Position]
+calcNewTailList headPos [] = []
+calcNewTailList headPos tailList = [newTailPos] ++ (calcNewTailList newTailPos remainingTail)
+    where
+        newTailPos = calcNewTailPos headPos nextTailPos
+        nextTailPos = head tailList
+        remainingTail = tail tailList
 
 -- solve2 :: Line -> Int
 -- solve2 x = getFirstIndexOfMessage x 0

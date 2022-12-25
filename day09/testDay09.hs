@@ -5,7 +5,7 @@ import           Test.HUnit
 
 -- testRoundResult :: Test
 test1 =
-    TestCase ( assertEqual "simple do command test" ["c", "badef", "ghi"] (doCommand (2,1,2) ["abc", "def", "ghi"]))
+    TestCase ( assertEqual "simple do command test" ((6,0), [(5,0), (4,0), (3,0)]) (moveDirectionMulti "R" (5,0) [(4,0), (3,0), (2,0)]))
 
 
 -- main :: IO Counts
