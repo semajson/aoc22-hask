@@ -46,21 +46,22 @@ getTailVisistedSquares headPos tailPos directions = [newTailPos] ++ (getTailVisi
           curDirection= head directions
 
 moveDirection :: String -> Position -> Position -> (Position, Position)
-moveDirection "U" headPos tailPos = (newHeadPos, newTailPos)
+moveDirection direction headPos tailPos = (newHeadPos, newTailPos)
     where newTailPos = calcNewTailPos newHeadPos tailPos
-          newHeadPos = (headPosX, headPosY + 1)
+          newHeadPos = calcNewHeadPos direction headPos
+
+calcNewHeadPos :: String -> Position -> Position
+calcNewHeadPos "U" headPos = newHeadPos
+    where newHeadPos = (headPosX, headPosY + 1)
           (headPosX, headPosY) = headPos
-moveDirection "D" headPos tailPos = (newHeadPos, newTailPos)
-    where newTailPos = calcNewTailPos newHeadPos tailPos
-          newHeadPos = (headPosX, headPosY - 1)
+calcNewHeadPos "D" headPos = newHeadPos
+    where newHeadPos = (headPosX, headPosY - 1)
           (headPosX, headPosY) = headPos
-moveDirection "L" headPos tailPos = (newHeadPos, newTailPos)
-    where newTailPos = calcNewTailPos newHeadPos tailPos
-          newHeadPos = (headPosX -1, headPosY)
+calcNewHeadPos "L" headPos = newHeadPos
+    where newHeadPos = (headPosX -1, headPosY)
           (headPosX, headPosY) = headPos
-moveDirection "R" headPos tailPos = (newHeadPos, newTailPos)
-    where newTailPos = calcNewTailPos newHeadPos tailPos
-          newHeadPos = (headPosX +1, headPosY)
+calcNewHeadPos "R" headPos = newHeadPos
+    where newHeadPos = (headPosX +1, headPosY)
           (headPosX, headPosY) = headPos
 
 calcNewTailPos :: Position -> Position -> Position
