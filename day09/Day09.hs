@@ -7,15 +7,15 @@ type Line = String
 type Direction = String
 type Step = Int
 type Command = (Direction, Step)
--- type Command = [String]
+type Position = (Int, Int)
 
 main:: IO()
 main = do
-    input <- readFile "test_inputs.txt"
+    input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    -- let sol = solve1 parsed_data
-    print parsed_data
+    let sol = solve1 parsed_data
+    print sol
 
 
 parse :: [Line] -> [Command]
@@ -27,9 +27,64 @@ parse lines = map (getCommand . (splitOn " ")) lines
 toInt :: String -> Int
 toInt =  read
 
--- solve1 :: Line -> Int
--- solve1 x = getFirstIndexOfPacket x 0
+solve1 :: [Command] -> Int
+solve1 commands = (length . nub) (getTailVisistedSquares (0,0) (0,0) directions)
+    where directions = convertCommandsToDirections commands
 
+convertCommandsToDirections :: [Command] -> [Direction]
+convertCommandsToDirections [] = []
+convertCommandsToDirections commands = directions ++ (convertCommandsToDirections remainingCommands)
+    where remainingCommands = tail commands
+          directions = replicate times direction
+          (direction, times) = head commands
+
+getTailVisistedSquares:: Position -> Position -> [Direction] -> [Position]
+getTailVisistedSquares headPos tailPos [] = []
+getTailVisistedSquares headPos tailPos directions = [newTailPos] ++ (getTailVisistedSquares newHeadPos newTailPos remainingDirections)
+    where (newHeadPos, newTailPos) = moveDirection curDirection headPos tailPos
+          remainingDirections = tail directions
+          curDirection= head directions
+
+moveDirection :: String -> Position -> Position -> (Position, Position)
+moveDirection "U" headPos tailPos = (newHeadPos, newTailPos)
+    where newTailPos = calcNewTailPos newHeadPos tailPos
+          newHeadPos = (headPosX, headPosY + 1)
+          (headPosX, headPosY) = headPos
+moveDirection "D" headPos tailPos = (newHeadPos, newTailPos)
+    where newTailPos = calcNewTailPos newHeadPos tailPos
+          newHeadPos = (headPosX, headPosY - 1)
+          (headPosX, headPosY) = headPos
+moveDirection "L" headPos tailPos = (newHeadPos, newTailPos)
+    where newTailPos = calcNewTailPos newHeadPos tailPos
+          newHeadPos = (headPosX -1, headPosY)
+          (headPosX, headPosY) = headPos
+moveDirection "R" headPos tailPos = (newHeadPos, newTailPos)
+    where newTailPos = calcNewTailPos newHeadPos tailPos
+          newHeadPos = (headPosX +1, headPosY)
+          (headPosX, headPosY) = headPos
+
+calcNewTailPos :: Position -> Position -> Position
+calcNewTailPos headPos tailPos
+    | (headPosX == tailPosX ) && ((headPosY - tailPosY) == 2) = (tailPosX, tailPosY + 1)
+    | (headPosX == tailPosX ) && ((headPosY - tailPosY) == -2) = (tailPosX, tailPosY - 1)
+    | ((headPosX - tailPosX ) == 2 ) && (headPosY == tailPosY) = (tailPosX + 1, tailPosY)
+    | ((headPosX - tailPosX ) == -2) && (headPosY == tailPosY) = (tailPosX - 1, tailPosY)
+
+    | ((headPosX - tailPosX ) == 1) && ((headPosY - tailPosY) == 2)  = (tailPosX +1, tailPosY +1)
+    | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == 1)  = (tailPosX +1, tailPosY +1)
+
+    | ((headPosX - tailPosX ) == 1) && ((headPosY - tailPosY) == -2)  = (tailPosX +1, tailPosY -1)
+    | ((headPosX - tailPosX ) == 2) && ((headPosY - tailPosY) == -1)  = (tailPosX +1, tailPosY -1)
+
+    | ((headPosX - tailPosX ) == -1) && ((headPosY - tailPosY) == 2)  = (tailPosX -1, tailPosY +1)
+    | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == 1)  = (tailPosX -1, tailPosY +1)
+
+    | ((headPosX - tailPosX ) == -1) && ((headPosY - tailPosY) == -2)  = (tailPosX -1, tailPosY -1)
+    | ((headPosX - tailPosX ) == -2) && ((headPosY - tailPosY) == -1)  = (tailPosX -1, tailPosY -1)
+    | otherwise = tailPos
+
+    where (tailPosX, tailPosY) = tailPos
+          (headPosX, headPosY) = headPos
 
 -- solve2 :: Line -> Int
 -- solve2 x = getFirstIndexOfMessage x 0
