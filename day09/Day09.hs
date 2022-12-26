@@ -11,7 +11,7 @@ type Position = (Int, Int)
 
 main:: IO()
 main = do
-    input <- readFile "test_inputs_2.txt"
+    input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
     print parsed_data
@@ -116,8 +116,3 @@ calcNewTailList headPos tailList = [newTailPos] ++ (calcNewTailList newTailPos r
         newTailPos = calcNewTailPos headPos nextTailPos
         nextTailPos = head tailList
         remainingTail = tail tailList
-
--- solve2 :: Line -> Int
--- solve2 x = getFirstIndexOfMessage x 0
-
-
