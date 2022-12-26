@@ -16,8 +16,9 @@ main = do
     let input_lines =lines input
     let parsed_data = parse input_lines
     -- print parsed_data
-    let sol = solve1 parsed_data
-    print sol
+    let sol = solve2 parsed_data
+    mapM_ print sol
+    -- print sol
 
 parse :: [Line] -> [Command]
 parse lines = map (getCommand . (splitOn " ")) lines
@@ -33,11 +34,13 @@ toInt =  read
 solve1 :: [Command] -> Int
 solve1 commands = sum (map calcSignalStrength cyclesToCheckRegisterVals)
     where
-        cyclesToCheckRegisterVals = traceShow (registerVals) filter isCycleToCheck registerValsDuring
+        cyclesToCheckRegisterVals = traceShow (registerValsDuring) filter isCycleToCheck registerValsDuring
         isCycleToCheck :: (Cycle, RegisterVal) -> Bool
         isCycleToCheck (cycle, _) = elem cycle cyclesToCheck
         cyclesToCheck = [20, 60, 100, 140, 180, 220]
-        registerValsDuring = map duringCycle registerVals
+        -- bit of a hack, "during" means the value at the middle of the cycle, not the end -
+        -- so need to shift by one
+        registerValsDuring = [(1, 0)] ++ (map duringCycle registerVals)
         duringCycle (cycle, registerVal) = (cycle +1, registerVal)
         registerVals = calcRegisterVals commands 0 220 firstRegisterVal
         firstRegisterVal = 1
@@ -65,3 +68,23 @@ runCommand ("addx", Just value) curCycle registerVal = [(nextCycle, registerVal)
         nextNextCycle = nextCycle + 1
         nextCycle = curCycle + 1
         newRegisterVal = registerVal + value
+
+solve2 :: [Command] -> [String]
+solve2 commands = rows
+    where
+        rows = map concat rowsList
+        rowsList = traceShow (registerValsDuring) splitEvery 40 pixelList
+        pixelList = map getPixelVal registerValsDuring
+        registerValsDuring = [(1, 0)] ++ (map duringCycle registerVals)
+        duringCycle (cycle, registerVal) = (cycle +1, registerVal)
+        registerVals = calcRegisterVals commands 0 240 firstRegisterVal
+        firstRegisterVal = 1
+
+getPixelVal :: (Cycle, RegisterVal) -> String
+getPixelVal (cycle, registerVal)
+    | diff < 2 = "#"
+    | otherwise = "."
+    where
+        diff =  abs (xValue - spritePos)
+        spritePos = registerVal +1
+        xValue = cycle `mod` 40
