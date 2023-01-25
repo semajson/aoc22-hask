@@ -15,10 +15,8 @@ main = do
     input <- readFile "real_inputs.txt"
     let input_lines =lines input
     let parsed_data = parse input_lines
-    -- print parsed_data
     let sol = solve2 parsed_data
     mapM_ print sol
-    -- print sol
 
 parse :: [Line] -> [Command]
 parse lines = map (getCommand . (splitOn " ")) lines
